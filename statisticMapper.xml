@@ -6,19 +6,17 @@
 <mapper namespace="com.devfun.settingweb_boot.dao.StatisticMapper">
  
     <select id="selectHolidayLogin" parameterType="string" resultType="hashMap">
-        with hdLogin as (
-        select substr(createDate, 1, 6) as createDate,
-        	   userID as userID,
-        	   requestCode as requestCode
-        from statistc.requestInfo
-        where substr(createDate, 3, 2) not in (select hMonth from statistc.holiday) and
-              substr(createDate, 5, 2) not in (select hDate from statistc.holiday)
-        )
-        select count(distinct userID) as LoginCnt
-        from hdLogin
-        where requestCode = 'L'
-              and createDate = #{date}
-        group by createDate;
+        select createDate as LoginDate, 
+		       count(distinct userID) as LoginCnt
+        from (select substr(createDate, 1, 6) as createDate,
+        	         userID as userID,
+        	         requestCode as requestCode
+              from statistc.requestInfo
+              where requestCode = 'L' and
+              substr(createDate, 3, 2) not in (select hMonth from statistc.holiday) and
+		      substr(createDate, 5, 2) not in (select hDate from statistc.holiday)) as hd
+        group by createDate
+        order by createDate asc;
     </select>
     
 </mapper>
