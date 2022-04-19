@@ -14,8 +14,7 @@
         where substr(createDate, 3, 2) not in (select hMonth from statistc.holiday) and
               substr(createDate, 5, 2) not in (select hDate from statistc.holiday)
         )
-        select createDate as LoginDate,
-        	   count(distinct userID) as LoginCnt
+        select count(distinct userID) as LoginCnt
         from hdLogin
         where requestCode = 'L'
               and createDate = #{date}
